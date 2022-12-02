@@ -2,6 +2,7 @@
 
 ## To run this project fllow these steps
 ```
+python -m venv venv
 cd venv
 cd Scripts
 activate.bat
