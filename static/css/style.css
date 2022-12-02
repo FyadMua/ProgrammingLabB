@@ -251,16 +251,21 @@ transform: translateY(100px) translateX(-150px);
 .footer{
   width: 100%;
   height: 50vh;
-  background: #010a43;
+  color: #ccc;
+  background: #1633da;
 }
 
 .footer-title{
-  color: #333B68;
+  color: #ffffff;
 }
 .footer-para{
-  color: #333B68;
+  color: #ffffff;
 }
 
 .copy{
   margin-left: 30%;
+}
+
+.table{
+  color:#ffffff
 }

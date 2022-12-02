@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Flights,Hotels,BookPackage,BookFlight,BookHotel,Famous
+from .models import Flights,Hotels,BookPackage,BookFlight,BookHotel,Places
 import datetime
 
 
@@ -79,4 +79,4 @@ class CityForm(forms.Form):
     city = forms.CharField(max_length=20,label='CITY',widget=forms.TextInput(attrs={'class' : 'fs-form form-control','placeholder':'City'}),required=False)
 
     class Meta:
-        models = Famous
+        models = Places

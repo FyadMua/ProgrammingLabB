@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 shadow-lg p-3 mb-5 bg-white rounded">
-      <form class="form-group" action="" method="POST">
+      <form class="form-group" method="POST">
         {% csrf_token %}
         {{form.as_p}}
         <button class="btn btn-primary">SEARCH</button>
@@ -30,8 +30,7 @@
     </div>
     <div class="main">
       <br><br>
-    {% for i in Flights %}
-
+    {% for i in all_flights %}
     <div class="container">
       <a href='/bookflight/{{ i.flight_num }}/{{ date }}' class="bg">
         <h1 class="hhh">BOOK</h1>
@@ -50,7 +49,7 @@
     </div>
     {% endfor %}
   </div>
-    
+
     {% endblock %}
   </body>
 </html>

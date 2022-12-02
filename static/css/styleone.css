@@ -1,6 +1,5 @@
 .fs-form{}
   .fd{
-    height: 100vh;
     width: 100%;
     background: #fafba4;
   }
@@ -85,7 +84,7 @@
 }
 .hf{
   background-color: #beebe9;
-  height: 100vh;
+  margin-bottom: 30px;
   width: 100%;
 }
 .down{
@@ -261,4 +260,38 @@ border: 3px solid green;
   color: red;
   transition: 1s ease;
   font-family: 'Fredoka One';
+}
+
+
+/*dashboard styles*/
+
+.btn{
+  margin-left: 0;
+}
+.hg{
+background: #1eb2a6;
+margin-bottom: 2px;
+}
+.gd{
+border-bottom: 1px solid black;
+}
+.hg1{
+background: #f57b51;
+margin-bottom: 2px;
+}
+.hg2{
+background: #fdd365;
+margin-bottom: 2px;
+}
+.flights-d{
+margin-bottom: 45px;
+background: linear-gradient(to left,#ede59a,#d5c455,#fddb3a);
+}
+.hotels-d{
+  margin-bottom: 45px;
+background: linear-gradient(to left,#fea5ad,#ea9abb,#be8abf);
+}
+.package-d{
+background: linear-gradient(to left,#550a46,#f9f6f7,#9aceff);
+margin-bottom: 45px;
 }

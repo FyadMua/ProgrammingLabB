@@ -4,8 +4,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm,HotelForm,FlightForm,ChoiceForm,SeatForm,RoomForm,CityForm
-from .models import Flights,Hotels,Famous,BookFlight,BookHotel,BookPackage,City
-
+from .models import Flights,Hotels,Places,BookFlight,BookHotel,BookPackage,City
+import datetime
 # Create your views here.
 
 def IndexView(request):
@@ -15,12 +15,16 @@ def PackageView(request):
     form = FlightForm(request.POST)
     if request.method=="POST":
         if form.is_valid():
-            source = form.cleaned_data['source'].upper()
+            print("####inside view")
+            source = form.cleaned_data['source']
             date = form.cleaned_data['date']
-            destination = form.cleaned_data['destination'].upper()
+            destination = form.cleaned_data['destination']
+            print(source)
+            print( date)
+            print(destination)
             # city = destination
             flights = Flights.objects.filter(source=source).filter(destination=destination)
-            famplace = Famous.objects.filter(city__city__contains=destination)
+            famplace = Places.objects.filter(city__city__contains=destination)
             hotels = Hotels.objects.filter(city__city__contains=destination)
             j = hotels[0].city
             s = {'source':source}
@@ -51,13 +55,16 @@ def HotelView(request):
     form = HotelForm(request.POST)
     if request.method=="POST":
         if form.is_valid():
-            city = form.cleaned_data['city'].upper()
-            date = form.cleaned_data['date']
+
+            city = form.cleaned_data['city'].lower()
+            date = form.cleaned_data['date'] or datetime.datetime.now()
             hotels = Hotels.objects.filter(city__city__contains=city)
             d = {'date':date}
             h = {'Hotels':hotels}
             form = {'form': form}
+
             response = {**h,**d,**form}
+            print(response)
             return render(request,'hotels.html',response)
         else:
             return render(request,'hotels.html',{'form': form})
@@ -70,14 +77,16 @@ def FlightView(request):
     c = 0;
     if request.method=="POST":
         if form.is_valid():
-            source = form.cleaned_data['source'].upper()
-            destination = form.cleaned_data['destination'].upper()
-            date = form.cleaned_data['date']
+            source = form.cleaned_data['source']
+            destination = form.cleaned_data['destination']
+            date = form.cleaned_data['date'] or datetime.datetime.now()
             flights = Flights.objects.filter(source=source).filter(destination=destination)
             d = {'date':date}
-            f = {'Flights':flights}
+            f = {'all_flights':flights}
             form = {'form': form}
+            print(flights)
             response = {**f,**d,**form}
+
             return render(request,'flights.html',response)
         else:
             return render(request,'flights.html',{'form': form})
@@ -92,6 +101,7 @@ def Dashboard(request):
     p1 = BookPackage.objects.filter(username_id=user)
     f={'flights':f1}
     h={'hotels':h1}
+    print(h)
     p={'packages':p1}
     response= {**f,**h,**p}
     return render(request,'dashboard.html',response)
@@ -153,7 +163,7 @@ def Hotelbook(request,hotel=None,date=None):
         if form.is_valid():
             room = form.cleaned_data['rooms']
             hotel = Hotels.objects.filter(hotel_name=hotel)
-            # d1=datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            #d1=datetime.datetime.strptime(date, "%Y-%m-%d").date()
             for i in hotel:
                 c1 = BookHotel.objects.filter(hotel_name=i.hotel_name).filter(date=date)
                 d1 = BookPackage.objects.filter(hotel_name=i.hotel_name).filter(date=date)
@@ -190,7 +200,7 @@ def HotelSubmit(request,hotel=None,date=None,room=None):
     return redirect('dashboard')
 
 @login_required
-def PackageBook(request,source,city,date):
+def PackageBook(request,source=None,city=None,date=None):
     c1={}
     d1={}
     roomrem=0
@@ -205,9 +215,12 @@ def PackageBook(request,source,city,date):
     form1 = {'form': form}
     if request.method=="POST":
         if form.is_valid():
-            flight = form.cleaned_data['flight'].upper()
+            availf = None
+            flight = form.cleaned_data['flight']
             hotel = form.cleaned_data['hotel']
             seats = form.cleaned_data['seats']
+            price = 0
+            seatrem = 0
             room = form.cleaned_data['rooms']
             flights = Flights.objects.filter(flight_num=flight)
             hotels = Hotels.objects.filter(hotel_name=hotel)
@@ -216,15 +229,15 @@ def PackageBook(request,source,city,date):
                 d = BookPackage.objects.filter(flight=i.flight_num).filter(date=date)
                 price = seats*i.eprice
                 seatrem = i.seats
-            for j in c:
-                cs = cs + j.seat
-            for k in d:
-                cs = cs + k.seat
-            seatrem = seatrem - cs
-            if (seatrem-seats) > 0:
-                availf = "available"
-            else:
-                availf = "unavailable"
+                for j in c:
+                    cs = cs + j.seat
+                for k in d:
+                    cs = cs + k.seat
+                    seatrem = seatrem - cs
+                    if (seatrem-seats) > 0:
+                        availf = "available"
+                    else:
+                        availf = "unavailable"
 
             for l in hotels:
                 c1 = BookHotel.objects.filter(hotel_name=l.hotel_name).filter(date=date)
@@ -334,15 +347,18 @@ def ConfirmCancelPackage(request,flight=None,seat=None,hotel=None,date=None,room
 
 def PlacesView(request):
     form = CityForm(request.POST)
+
     if request.method=="POST":
         if form.is_valid():
             city = form.cleaned_data['city']
-            famplace = Famous.objects.filter(city__city__contains=city)
+            famplace = Places.objects.filter(city__city__contains=city)
             f = {'form':form}
-            p = {'Famplace':famplace}
+            p = {'places':famplace}
             response = {**f,**p}
             return render(request,'places.html',response)
         else:
-            return render(request,'places.html',{'form':form})
+            #return render(request,'places.html',{'form':form})
+            return render(request,'places.html',{'places':form})
     else:
+        #return render(request,'places.html',{'form':form})
         return render(request,'places.html',{'form':form})

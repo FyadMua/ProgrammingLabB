@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 
+from datetime import datetime
+
 # Create your models here.
 class City(models.Model):
     city = models.CharField(max_length=200)
@@ -44,7 +46,7 @@ class Hotels(models.Model):
     def __str__(self):
         return self.hotel_name
 
-class Famous(models.Model):
+class Places(models.Model):
     city = models.ForeignKey(City,on_delete=models.CASCADE)
     place_name = models.CharField(max_length=200)
     image = models.ImageField(null=True,upload_to='img/')
@@ -65,7 +67,7 @@ class BookFlight(models.Model):
 class BookHotel(models.Model):
     username_id = models.ForeignKey(User,on_delete=models.CASCADE)
     hotel_name = models.CharField(max_length=10)
-    date = models.CharField(max_length=20)
+    date = models.CharField(max_length=20, default=datetime.now)
     room = models.IntegerField(default=1)
 
     def __str__(self):
