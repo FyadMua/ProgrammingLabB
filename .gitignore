@@ -1,4 +1,4 @@
-venv
+.env
 seyahat
 travelapp/__pycache__
 tourAndTravel/__pycache__
